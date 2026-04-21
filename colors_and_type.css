@@ -1,0 +1,267 @@
+/* ==========================================================================
+   Zähringer Design System — Tokens
+   Derived from: JaschaZ/ZaehringerWebsite (zaehringer.co)
+
+   The source is small and deliberate. These tokens extend the minimal set of
+   decisions made there (cream bg, near-black ink, muted warm neutrals, a
+   single display italic, one sans) into a complete system suitable for
+   personal site, case studies, and writing.
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Inter:wght@200;300;400;500&display=swap');
+
+:root {
+  /* ── Canonical palette — pulled directly from source ─────────────────── */
+  --cream:          #F5F0E8;  /* page background */
+  --ink:            #1A1A1A;  /* primary text */
+  --sand:           #9C8E7E;  /* muted label */
+  --stone:          #B0A090;  /* separator / tertiary */
+  --ink-10:         rgba(26, 26, 26, 0.10); /* hairline */
+  --ink-25:         rgba(26, 26, 26, 0.25);
+  --ink-60:         rgba(26, 26, 26, 0.60);
+
+  /* ── Extended warm neutrals (tonal siblings of cream + sand) ─────────── */
+  --parchment:      #FBF7F0;  /* lighter surface, cards/modal */
+  --linen:          #EDE5D8;  /* subtle sunken surface */
+  --oat:            #D9CEBC;  /* quiet divider / chip */
+  --clay:           #C7B8A3;  /* mid neutral */
+  --bark:           #6B5F52;  /* secondary text */
+  --espresso:       #2B2520;  /* warm near-black alt */
+
+  /* ── Accent (used sparingly — never loud) ─────────────────────────────── */
+  --terracotta:     #C87B5A;  /* warm orange, small highlights */
+  --ochre:          #C9A25E;  /* gold, italic emphasis */
+  --moss:           #7F8A5C;  /* quiet positive */
+  --rose:           #B58A7C;  /* warm mauve */
+
+  /* ── Semantic color tokens ────────────────────────────────────────────── */
+  --bg:             var(--cream);
+  --bg-elevated:    var(--parchment);
+  --bg-sunken:      var(--linen);
+  --fg1:            var(--ink);        /* primary text */
+  --fg2:            var(--bark);       /* body/secondary */
+  --fg3:            var(--sand);       /* labels, meta */
+  --fg4:            var(--stone);      /* dividers-as-text, dots */
+  --border:         var(--ink-10);
+  --border-strong:  var(--oat);
+  --accent:         var(--terracotta);
+  --accent-quiet:   var(--ochre);
+
+  /* ── Type families ─────────────────────────────────────────────────────── */
+  --font-sans:      'Inter', system-ui, -apple-system, 'Helvetica Neue', sans-serif;
+  --font-serif:     'Cormorant Garamond', 'EB Garamond', Georgia, 'Times New Roman', serif;
+  --font-mono:      ui-monospace, 'SF Mono', Menlo, 'JetBrains Mono', monospace;
+
+  /* ── Weight ranges actually used ──────────────────────────────────────── */
+  --w-light:        300;
+  --w-regular:      400;
+  --w-medium:       500;
+
+  /* ── Fluid type scale (desktop-first, minor third-ish, refined) ──────── */
+  --fs-eyebrow:     10.5px;   /* tracking labels, header name */
+  --fs-micro:       11px;     /* footer links */
+  --fs-xs:          13px;
+  --fs-sm:          15px;
+  --fs-body:        17px;
+  --fs-lg:          21px;
+  --fs-xl:          28px;
+  --fs-2xl:         40px;
+  --fs-3xl:         56px;
+  --fs-display:     clamp(56px, 9vw, 128px);
+
+  /* ── Tracking ─────────────────────────────────────────────────────────── */
+  --track-caps:     0.22em;    /* 0.22em–0.24em in source */
+  --track-caps-wide:0.26em;
+  --track-tight:    -0.01em;
+  --track-normal:   0.04em;    /* footer-link body tracking in source */
+
+  /* ── Leading ──────────────────────────────────────────────────────────── */
+  --lh-tight:       1.08;
+  --lh-snug:        1.28;
+  --lh-body:        1.55;
+  --lh-loose:       1.72;
+
+  /* ── Spacing (8-based, with half-steps for fine UI) ───────────────────── */
+  --s-1:            4px;
+  --s-2:            8px;
+  --s-3:            12px;
+  --s-4:            16px;
+  --s-5:            24px;
+  --s-6:            32px;
+  --s-7:            44px;   /* canonical page gutter from source */
+  --s-8:            64px;
+  --s-9:            96px;
+  --s-10:           128px;
+
+  /* ── Radii — restrained; content is mostly rectilinear ────────────────── */
+  --r-none:         0;
+  --r-sm:           2px;
+  --r-md:           4px;
+  --r-lg:           8px;
+  --r-pill:         999px;
+
+  /* ── Elevation — almost none. Warm ink tints only, no blue. ───────────── */
+  --shadow-0:       none;
+  --shadow-1:       0 1px 2px rgba(26, 26, 26, 0.04);
+  --shadow-2:       0 2px 12px rgba(26, 26, 26, 0.06);
+  --shadow-3:       0 8px 32px rgba(26, 26, 26, 0.08);
+
+  /* ── Motion ───────────────────────────────────────────────────────────── */
+  --ease-standard:  cubic-bezier(0.4, 0, 0.2, 1);   /* used in source hover */
+  --ease-enter:     cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-exit:      cubic-bezier(0.7, 0, 0.84, 0);
+  --dur-fast:       200ms;
+  --dur-base:       350ms;
+  --dur-slow:       1200ms;    /* fade-in from source */
+}
+
+/* ==========================================================================
+   Semantic element styles — the "what things look like" layer.
+   Use as a baseline; compose into real pages.
+   ========================================================================== */
+
+html, body {
+  background: var(--bg);
+  color: var(--fg1);
+  font-family: var(--font-sans);
+  font-weight: var(--w-light);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ── Display — the one true "voice" of the brand ──────────────────────── */
+.display, h1.display {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: var(--w-regular);
+  font-size: var(--fs-display);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--track-tight);
+  color: var(--fg1);
+  text-wrap: balance;
+}
+
+h1 {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: var(--w-regular);
+  font-size: var(--fs-3xl);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--track-tight);
+  color: var(--fg1);
+  margin: 0 0 var(--s-5);
+  text-wrap: balance;
+}
+
+h2 {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: var(--w-regular);
+  font-size: var(--fs-2xl);
+  line-height: var(--lh-snug);
+  letter-spacing: var(--track-tight);
+  color: var(--fg1);
+  margin: 0 0 var(--s-4);
+  text-wrap: balance;
+}
+
+h3 {
+  font-family: var(--font-sans);
+  font-weight: var(--w-regular);
+  font-size: var(--fs-xl);
+  line-height: var(--lh-snug);
+  letter-spacing: -0.005em;
+  color: var(--fg1);
+  margin: 0 0 var(--s-3);
+}
+
+/* ── Eyebrow / section labels — the single most-used pattern ─────────── */
+.eyebrow, .label {
+  font-family: var(--font-sans);
+  font-weight: var(--w-light);
+  font-size: var(--fs-eyebrow);
+  letter-spacing: var(--track-caps);
+  text-transform: uppercase;
+  color: var(--fg3);
+}
+
+/* ── Body ─────────────────────────────────────────────────────────────── */
+p {
+  font-family: var(--font-sans);
+  font-weight: var(--w-light);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--fg2);
+  margin: 0 0 var(--s-4);
+  max-width: 62ch;
+  text-wrap: pretty;
+}
+
+small, .meta {
+  font-family: var(--font-sans);
+  font-weight: var(--w-light);
+  font-size: var(--fs-micro);
+  letter-spacing: var(--track-normal);
+  color: var(--fg3);
+}
+
+/* ── Links — understated, animated underline (from source) ────────────── */
+a {
+  color: var(--fg1);
+  text-decoration: none;
+  position: relative;
+  transition: color var(--dur-fast) var(--ease-standard);
+}
+
+a.underline-grow::after,
+.footer-link::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: currentColor;
+  transition: width var(--dur-base) var(--ease-standard);
+}
+
+a.underline-grow:hover::after,
+.footer-link:hover::after {
+  width: 100%;
+}
+
+/* ── Blockquote — leans on the italic serif ────────────────────────── */
+blockquote {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: var(--w-regular);
+  font-size: var(--fs-xl);
+  line-height: var(--lh-snug);
+  color: var(--fg1);
+  border-left: 1px solid var(--border-strong);
+  padding: var(--s-2) 0 var(--s-2) var(--s-5);
+  margin: var(--s-6) 0;
+  max-width: 56ch;
+}
+
+code, kbd, samp {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  background: var(--bg-sunken);
+  padding: 1px 6px;
+  border-radius: var(--r-sm);
+  color: var(--fg1);
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: var(--s-6) 0;
+}
+
+::selection {
+  background: var(--oat);
+  color: var(--ink);
+}

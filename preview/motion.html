@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0;padding:0;background:var(--cream);width:700px}
+  .wrap{padding:28px 32px;display:flex;flex-direction:column;gap:16px}
+  .row{display:flex;align-items:center;gap:18px}
+  .lbl{font-family:var(--font-mono);font-size:10px;color:var(--fg3);width:140px}
+  .demo{flex:1}
+  a.u{font-family:var(--font-sans);font-weight:300;font-size:14px;color:var(--ink);text-decoration:none;position:relative;display:inline-block;padding-bottom:2px}
+  a.u::after{content:'';position:absolute;bottom:0;left:0;width:0;height:1px;background:currentColor;transition:width .35s cubic-bezier(.4,0,.2,1)}
+  a.u:hover::after{width:100%}
+  .fade{font-family:var(--font-serif);font-style:italic;font-size:24px;color:var(--ink);animation:f 1.8s ease infinite}
+  @keyframes f{0%,100%{opacity:.3}50%{opacity:1}}
+  .drift{font-family:var(--font-serif);font-style:italic;font-size:24px;color:var(--ink);animation:d 3s ease-in-out infinite;display:inline-block}
+  @keyframes d{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+</style></head><body><div class="wrap">
+  <div class="row"><span class="lbl">underline grow</span><div class="demo"><a class="u">Hover me slowly</a></div></div>
+  <div class="row"><span class="lbl">fade in · 1.2s</span><div class="demo"><span class="fade">Arriving, quietly</span></div></div>
+  <div class="row"><span class="lbl">idle sine drift</span><div class="demo"><span class="drift">Breathing</span></div></div>
+</div></body></html>

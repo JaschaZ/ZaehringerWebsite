@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0;padding:0;background:var(--cream);width:700px}
+  .wrap{padding:28px 32px;display:flex;flex-direction:column;gap:20px}
+  .group{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .btn{font-family:var(--font-sans);font-weight:300;font-size:11px;letter-spacing:0.22em;text-transform:uppercase;padding:12px 22px;border-radius:2px;cursor:pointer;transition:all .2s cubic-bezier(.4,0,.2,1);border:1px solid transparent}
+  .primary{background:var(--ink);color:var(--cream)}
+  .secondary{background:transparent;color:var(--ink);border-color:var(--ink)}
+  .ghost{background:transparent;color:var(--ink)}
+  .link{font-family:var(--font-sans);font-weight:300;font-size:13px;color:var(--ink);position:relative;text-decoration:none;border-bottom:1px solid var(--ink)}
+  .lbl{font-family:var(--font-mono);font-size:10px;color:var(--fg3);min-width:80px}
+</style></head><body><div class="wrap">
+  <div class="group"><span class="lbl">primary</span><button class="btn primary">Get in touch</button><button class="btn secondary">Read more</button><button class="btn ghost">Cancel</button></div>
+  <div class="group"><span class="lbl">text link</span><a class="link">jaschazaehringer@protonmail.com</a><span style="color:var(--stone);margin:0 4px">·</span><a class="link">Instagram ↗</a></div>
+</div></body></html>

@@ -1,0 +1,165 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+  height: 100vh;
+  background: #F5F0E8;
+  cursor: none;
+}
+
+canvas {
+  display: block;
+}
+
+/* ── Header ── */
+#header {
+  position: fixed;
+  top: 36px;
+  left: 44px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.name {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 10.5px;
+  font-weight: 300;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #1A1A1A;
+  opacity: 0;
+  animation: fadeIn 1.2s ease 0.4s forwards;
+}
+
+/* ── Footer ── */
+#footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 18px 44px;
+  z-index: 10;
+  border-top: 1px solid rgba(26, 26, 26, 0.1);
+  opacity: 0;
+  animation: fadeIn 1.2s ease 0.7s forwards;
+}
+
+.footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-label {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 9.5px;
+  font-weight: 300;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #9C8E7E;
+}
+
+.footer-links {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 300;
+  letter-spacing: 0.04em;
+}
+
+.footer-links a {
+  color: #1A1A1A;
+  text-decoration: none;
+  position: relative;
+}
+
+.footer-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: #1A1A1A;
+  transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.footer-links a:hover::after {
+  width: 100%;
+}
+
+.dot {
+  color: #B0A090;
+  font-size: 10px;
+}
+
+/* ── Custom cursor ── */
+#cursor {
+  position: fixed;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #1A1A1A;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  mix-blend-mode: multiply;
+  opacity: 0;
+  transition: opacity 0.3s ease, width 0.2s ease, height 0.2s ease;
+}
+
+#cursor.visible {
+  opacity: 1;
+}
+
+/* ── Fade-in keyframe ── */
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+
+/* ────────────────────────────────────────
+   Mobile
+──────────────────────────────────────── */
+@media (hover: none) and (pointer: coarse) {
+
+  /* restore system cursor, hide dot */
+  body { cursor: auto; }
+  #cursor { display: none; }
+
+  /* prevent canvas from triggering scroll while dragging letters */
+  canvas { touch-action: none; }
+
+  /* tighten header on smaller screens */
+  #header {
+    top: 28px;
+    left: 28px;
+  }
+
+  /* footer: stack label + links vertically, centered */
+  #footer {
+    padding: 16px 28px 24px;
+  }
+
+  .footer-inner {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .footer-links {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px 20px;
+    font-size: 13px;
+  }
+
+  /* bigger tap targets */
+  .footer-links a {
+    padding: 4px 0;
+  }
+}

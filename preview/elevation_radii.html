@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0;padding:0;background:var(--cream);width:700px}
+  .wrap{padding:28px 32px;display:flex;flex-direction:column;gap:18px}
+  .row{display:flex;gap:14px;align-items:flex-end}
+  .card{flex:1;height:80px;background:var(--parchment);display:flex;align-items:flex-end;padding:10px;font-family:var(--font-mono);font-size:10px;color:var(--fg3)}
+  .s0{box-shadow:none;border:1px solid var(--border)}
+  .s1{box-shadow:0 1px 2px rgba(26,26,26,0.04)}
+  .s2{box-shadow:0 2px 12px rgba(26,26,26,0.06)}
+  .s3{box-shadow:0 8px 32px rgba(26,26,26,0.08)}
+  .rr{display:flex;gap:14px;align-items:center;margin-top:4px}
+  .sq{width:56px;height:56px;background:var(--linen);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;color:var(--fg3)}
+</style></head><body><div class="wrap">
+  <div class="row">
+    <div class="card s0">0 · none</div>
+    <div class="card s1">1 · subtle</div>
+    <div class="card s2">2 · card</div>
+    <div class="card s3">3 · modal</div>
+  </div>
+  <div class="rr">
+    <div class="sq" style="border-radius:0">0</div>
+    <div class="sq" style="border-radius:2px">2</div>
+    <div class="sq" style="border-radius:4px">4</div>
+    <div class="sq" style="border-radius:8px">8</div>
+    <div class="sq" style="border-radius:999px">pill</div>
+  </div>
+</div></body></html>
