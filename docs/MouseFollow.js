@@ -74,7 +74,7 @@ onResize()
 /*--------------------
 Helpers
 --------------------*/
-const getFooterTop  = () => footerEl.getBoundingClientRect().top
+const getFooterTop   = () => footerEl.getBoundingClientRect().top
 const getHeaderBottom = () => headerEl ? headerEl.getBoundingClientRect().bottom : 0
 const clampY = (y) => Math.min(y, getFooterTop() - settings.footerClearance)
 
@@ -103,35 +103,30 @@ const onMouseMove = (e) => {
 
 
 /*--------------------
-Mobile – autonomous wander
-Smooth Lissajous-style path: two sine waves at irrational frequency
-ratios so the curve never exactly repeats and has no sharp corners.
+Mobile – autonomous wander target
+The head chases this target; the body snakes behind it.
+Modulated sine at irrational ratio (≈ √2) → smooth, non-repeating
+curves that never collapse into a straight line or sharp corner.
 --------------------*/
 const updateMobileTarget = () => {
-  // Increment slowly — full sine period ≈ 25 s at 60 fps
-  autoTime += 0.004
+  // ~15 s per full X cycle, ~11 s per Y cycle at 60 fps
+  autoTime += 0.007
 
   const headerBottom = getHeaderBottom()
   const footerTop    = getFooterTop()
 
-  // X: head of chain must sit far enough right for the full text to be on screen
-  const chainWidth = chain.length * settings.minDistance
-  const xMin = chainWidth + 16
-  const xMax = win.w - 16
-  const xMid = (xMin + xMax) / 2
-  const xAmp = (xMax - xMin) / 2
+  const margin = 28
+  const xMid = win.w / 2
+  const xAmp = win.w / 2 - margin
 
-  // Y: between header bottom and footer top with breathing room
-  const yMin = headerBottom + settings.headerClearance + 50
-  const yMax = footerTop    - settings.footerClearance  - 30
+  const yMin = headerBottom + settings.headerClearance + 30
+  const yMax = footerTop    - settings.footerClearance - 30
   const yMid = (yMin + yMax) / 2
   const yAmp = (yMax - yMin) / 2
 
-  // Modulated sine: outer sine + inner sine at different speed → smooth curves,
-  // never sharp, never perfectly repetitive.
-  mouse.x = xMid + Math.sin(autoTime * 1.00 + Math.sin(autoTime * 0.31) * 1.2) * xAmp * 0.85
-  mouse.y = yMid + Math.sin(autoTime * 1.41 + Math.sin(autoTime * 0.47) * 0.9) * yAmp * 0.85
-  //                                    ↑ Math.SQRT2 ≈ 1.41 — irrational ratio keeps X/Y out of phase
+  // Outer + inner sine → organic, ever-varying curves
+  mouse.x = xMid + Math.sin(autoTime       + Math.sin(autoTime * 0.31) * 1.2) * xAmp * 0.82
+  mouse.y = yMid + Math.sin(autoTime * 1.41 + Math.sin(autoTime * 0.47) * 0.9) * yAmp * 0.82
 }
 
 
@@ -170,26 +165,47 @@ const draw = () => {
     ctx.globalAlpha = Math.max(alpha, 0.25)
 
     if (isInteracting) {
-      // Desktop drag mode – chain follows cursor with spring physics
+      // ── Desktop drag: chain trails the cursor ──────────────────────────
       ctx.fillText(link.letter, link.x - settings.minDistance, link.y)
 
       if (index > 0) {
-        const prevLink = chain[index - 1]
-        const dx = link.x - prevLink.x
-        const dy = link.y - prevLink.y
-        const distance = Math.sqrt(dx * dx + dy * dy)
-
-        if (distance > settings.minDistance) {
-          const ratio = settings.minDistance / distance
-          link.x = lerp(link.x, prevLink.x + dx * ratio, .4)
-          link.y = lerp(link.y, prevLink.y + dy * ratio, .4)
+        const prev = chain[index - 1]
+        const dx = link.x - prev.x
+        const dy = link.y - prev.y
+        const dist = Math.sqrt(dx * dx + dy * dy)
+        if (dist > settings.minDistance) {
+          const ratio = settings.minDistance / dist
+          link.x = lerp(link.x, prev.x + dx * ratio, 0.4)
+          link.y = lerp(link.y, prev.y + dy * ratio, 0.4)
         }
       }
+
+    } else if (isMobile) {
+      // ── Mobile snake: head chases autonomous target, ───────────────────
+      // ── each letter physically follows the one ahead of it  ───────────
+      if (index === 0) {
+        // Head smoothly pursues the wandering target
+        link.x = lerp(link.x, mouse.x,  0.1)
+        link.y = lerp(link.y, targetY,  0.1)
+      } else {
+        // Body: pull each link to exactly minDistance behind the previous
+        const prev = chain[index - 1]
+        const dx   = link.x - prev.x
+        const dy   = link.y - prev.y
+        const dist = Math.sqrt(dx * dx + dy * dy)
+        if (dist > settings.minDistance) {
+          const ratio = settings.minDistance / dist
+          link.x = lerp(link.x, prev.x + dx * ratio, 0.5)
+          link.y = lerp(link.y, prev.y + dy * ratio, 0.5)
+        }
+      }
+      ctx.fillText(link.letter, link.x, link.y)
+
     } else {
-      // Idle (desktop) / always-on (mobile) – chain gently trails the target
-      const theta = scale(index, 0, chain.length, .3, .06)
+      // ── Desktop idle: gentle horizontal drift with sine ripple ─────────
+      const theta = scale(index, 0, chain.length, 0.3, 0.06)
       link.x = lerp(link.x, mouse.x - (index + 1) * settings.minDistance, theta)
-      link.y = lerp(link.y, targetY + Math.sin(time * .3 + index * .5) * 4, theta)
+      link.y = lerp(link.y, targetY + Math.sin(time * 0.3 + index * 0.5) * 4, theta)
       ctx.fillText(link.letter, link.x, link.y)
     }
   })
