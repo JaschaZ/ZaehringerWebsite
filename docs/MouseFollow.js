@@ -14,13 +14,13 @@ Settings
 --------------------*/
 const settings = {
   letters: 'FOLLOW YOUR DREAM',
-  // smaller spacing on mobile so the full chain fits narrow screens
   minDistance: isMobile ? 18 : 22,
   font: isMobile
     ? 'italic 30px "Cormorant Garamond", Georgia, serif'
     : 'italic 34px "Cormorant Garamond", Georgia, serif',
   color: '#1A1A1A',
   footerClearance: 22,
+  headerClearance: 20,
 }
 
 /*--------------------
@@ -30,24 +30,20 @@ const canvas = document.getElementById('canvas')
 const ctx = canvas.getContext('2d')
 const cursorEl = document.getElementById('cursor')
 const footerEl = document.getElementById('footer')
+const headerEl = document.getElementById('header')
 
 const win = {
   w: window.innerWidth,
   h: window.innerHeight
 }
 
-// On mobile the chain idles centered horizontally.
-// Chain renders letters at mouse.x - (index+1)*dist, so shift mouse.x
-// right by half the chain length to visually center the whole string.
-const mobileCenterX = () => win.w / 2 + Math.ceil(settings.letters.length / 2) * settings.minDistance
-const mobileCenterY = () => win.h * 0.44
-
 const mouse = {
-  x: isMobile ? mobileCenterX() : win.w / 2,
-  y: isMobile ? mobileCenterY() : win.h / 2,
+  x: win.w / 2,
+  y: win.h / 2,
 }
 
 let time = 0
+let autoTime = 0
 const devicePixelRatio = window.devicePixelRatio || 1
 const chain = []
 const letters = settings.letters.split('').reverse()
@@ -71,12 +67,6 @@ const onResize = () => {
   canvas.style.width = `${win.w}px`
   canvas.style.height = `${win.h}px`
   ctx.scale(devicePixelRatio, devicePixelRatio)
-
-  // keep idle center in sync after orientation change
-  if (isMobile && !isInteracting) {
-    mouse.x = mobileCenterX()
-    mouse.y = mobileCenterY()
-  }
 }
 onResize()
 
@@ -84,7 +74,8 @@ onResize()
 /*--------------------
 Helpers
 --------------------*/
-const getFooterTop = () => footerEl.getBoundingClientRect().top
+const getFooterTop  = () => footerEl.getBoundingClientRect().top
+const getHeaderBottom = () => headerEl ? headerEl.getBoundingClientRect().bottom : 0
 const clampY = (y) => Math.min(y, getFooterTop() - settings.footerClearance)
 
 
@@ -112,22 +103,35 @@ const onMouseMove = (e) => {
 
 
 /*--------------------
-Mobile – touch
+Mobile – autonomous wander
+Smooth Lissajous-style path: two sine waves at irrational frequency
+ratios so the curve never exactly repeats and has no sharp corners.
 --------------------*/
-const onTouchStart = (e) => {
-  const touch = e.touches[0]
-  if (!touch) return
+const updateMobileTarget = () => {
+  // Increment slowly — full sine period ≈ 25 s at 60 fps
+  autoTime += 0.004
 
-  // Just update the target — idle lerp smoothly attracts the chain there
-  mouse.x = touch.clientX
-  mouse.y = clampY(touch.clientY)
+  const headerBottom = getHeaderBottom()
+  const footerTop    = getFooterTop()
 
-  clearTimeout(timeoutID)
-  // After 2.5 s drift back to center
-  timeoutID = setTimeout(() => {
-    mouse.x = mobileCenterX()
-    mouse.y = mobileCenterY()
-  }, 2500)
+  // X: head of chain must sit far enough right for the full text to be on screen
+  const chainWidth = chain.length * settings.minDistance
+  const xMin = chainWidth + 16
+  const xMax = win.w - 16
+  const xMid = (xMin + xMax) / 2
+  const xAmp = (xMax - xMin) / 2
+
+  // Y: between header bottom and footer top with breathing room
+  const yMin = headerBottom + settings.headerClearance + 50
+  const yMax = footerTop    - settings.footerClearance  - 30
+  const yMid = (yMin + yMax) / 2
+  const yAmp = (yMax - yMin) / 2
+
+  // Modulated sine: outer sine + inner sine at different speed → smooth curves,
+  // never sharp, never perfectly repetitive.
+  mouse.x = xMid + Math.sin(autoTime * 1.00 + Math.sin(autoTime * 0.31) * 1.2) * xAmp * 0.85
+  mouse.y = yMid + Math.sin(autoTime * 1.41 + Math.sin(autoTime * 0.47) * 0.9) * yAmp * 0.85
+  //                                    ↑ Math.SQRT2 ≈ 1.41 — irrational ratio keeps X/Y out of phase
 }
 
 
@@ -136,9 +140,7 @@ Listeners
 --------------------*/
 window.addEventListener('resize', onResize)
 
-if (isMobile) {
-  window.addEventListener('touchstart', onTouchStart, { passive: true })
-} else {
+if (!isMobile) {
   window.addEventListener('mousemove', onMouseMove)
 }
 
@@ -168,6 +170,7 @@ const draw = () => {
     ctx.globalAlpha = Math.max(alpha, 0.25)
 
     if (isInteracting) {
+      // Desktop drag mode – chain follows cursor with spring physics
       ctx.fillText(link.letter, link.x - settings.minDistance, link.y)
 
       if (index > 0) {
@@ -183,6 +186,7 @@ const draw = () => {
         }
       }
     } else {
+      // Idle (desktop) / always-on (mobile) – chain gently trails the target
       const theta = scale(index, 0, chain.length, .3, .06)
       link.x = lerp(link.x, mouse.x - (index + 1) * settings.minDistance, theta)
       link.y = lerp(link.y, targetY + Math.sin(time * .3 + index * .5) * 4, theta)
@@ -199,6 +203,7 @@ Animate
 --------------------*/
 const animate = () => {
   time += 0.1
+  if (isMobile) updateMobileTarget()
   requestAnimationFrame(animate)
   draw()
 }
