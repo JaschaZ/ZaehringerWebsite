@@ -188,6 +188,7 @@ h1.page-title {
   transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .writing-row:hover .title::after { width: 100%; }
+.writing-row.placeholder .title::after { display: none; }
 .writing-row .kind {
   font-size: 11px;
   font-weight: 300;
