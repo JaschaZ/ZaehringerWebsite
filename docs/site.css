@@ -361,6 +361,26 @@ h1.article-title {
   color: var(--ink);
 }
 
+/* ── LinkedIn detour ─────────────────────────────────── */
+body.detour-page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: 1fr auto;
+}
+.detour-page main {
+  width: 100%;
+  align-self: center;
+  padding-bottom: 80px;
+}
+.detour-page h1.page-title { margin-bottom: 28px; }
+.detour-actions {
+  display: flex;
+  gap: 24px;
+  margin-top: 40px;
+}
+.detour-actions .back-link { margin-top: 0; }
+.detour-page .site-footer { margin-top: 0; }
+
 @keyframes fadeIn { to { opacity: 1; } }
 
 /* ── Mobile ───────────────────────────────────────── */
@@ -373,4 +393,6 @@ h1.article-title {
   .writing-row { grid-template-columns: 56px 1fr; }
   .writing-row .kind { grid-column: 2; margin-top: 4px; }
   .about-grid { grid-template-columns: 1fr; gap: 28px; }
+  .detour-page main { padding-bottom: 56px; }
+  .detour-actions { flex-direction: column; align-items: flex-start; gap: 18px; }
 }
